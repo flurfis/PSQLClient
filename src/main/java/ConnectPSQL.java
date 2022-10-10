@@ -1,0 +1,132 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Properties;
+
+public class ConnectPSQL {
+
+    static void startConnection() {
+
+        Properties connectionProps = new Properties();
+        connectionProps.setProperty("ssl", "false");
+        connectionProps.setProperty("sslmode", "disable");
+        connectionProps.setProperty("user", "flu");
+        connectionProps.setProperty("password", "123");
+        Connection c = null;
+        Statement statement = null;
+        // jdbc:postgresql://<database_host>:<port>/<database_name>, username, pw
+        //docker container name: psql_simple
+        String url = "jdbc:postgresql://localhost:5443/simple_db";
+
+        try {
+            Class.forName ("org.postgresql.Driver");
+            c = DriverManager.getConnection(url, connectionProps);
+            //c = DriverManager.getConnection("jdbc:postgresql://localhost:1234/hello");
+            //c.setAutoCommit(false);
+            System.out.println("Successfully Connected.");
+
+            statement = c.createStatement();
+            //statement.executeUpdate("INSERT INTO lol(LolId) VALUES (5);");  //mit executeQuery erwartet es ein resultat... gibt fehlermeldung
+            //statement.executeUpdate("INSERT INTO Album(AlbumId, Title, ArtistId) VALUES (40, 'Hellosöodfj', 2222), (5, 'lolsdfsfsdff', 3000)");
+
+            /* from the website */
+
+
+
+            //ResultSet rs = statement.executeQuery("SELECT * FROM Album;");
+            ResultSet rs = statement.executeQuery("SELECT empid FROM public.emps LIMIT 1");
+
+            while (rs.next()) {
+                int lol = rs.getInt("empid");
+                //String  title = rs.getString("Title");
+                //int artistid  = rs.getInt("ArtistId");
+
+                //System.out.printf( "AlbumId = %s , Title = %s, ArtistId = %s ", albumid,title, artistid );
+                System.out.printf( "LolId = %s", lol);
+                System.out.println();
+            }
+
+            System.out.println("SQL-part executed successfully");
+
+            rs.close();
+
+
+
+
+
+
+            statement.close();
+            c.close();
+
+        } catch (Exception e) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+
+        System.out.println("End of Program");
+
+    }
+
+}
+
+/*
+
+    docker run --name psql_simple -e POSTGRES_USER=flu -e POSTGRES_PASSWORD=123 -p 5443:5432 -v C:\Users\esigu\SynologyDrive\01_Uni\UniBasel\22Polypheny\pgsql_server:/var/lib/postgresql/data -d postgres
+    i just changed the second port, port mapping....
+
+    docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres
+
+    docker run --name postgresql -e POSTGRES_USER=myusername -e POSTGRES_PASSWORD=mypassword -p 5432:5432 -v /data:/var/lib/postgresql/data -d postgres
+
+    --name: name of docker container
+    -e: sets unique username/pw for postgres db
+    -p 80:80 : map port 80 of the host to port 80 in the container
+    -v:synchronizez postgresdata with a local folder (data survives even if docker container is terminated
+    -d: run the container in detached mode (in the background) --> means that a Docker container runs in the background of your terminal.
+        It does not receive input or display output.
+        is the parameter that runs the Docker Container in the detached mode, i.e., in the background.
+        If you accidentally close or terminate the Command Prompt, the Docker Container will still run in the background.
+    postgres: name of Docker image downloaded to run container
+
+    check status of newly created postgrescontainer:
+    docker ps -a
+
+    start container:
+    docker start psql_simple
+
+    stop container:
+    docker stop psql_simple
+
+
+    port idea: (5442)
+
+
+
+   CREATE TABLE Author (
+   AUTHOR_ID             INT     PRIMARY KEY     NOT NULL,
+   AUTHOR_NAME           TEXT    NOT NULL,
+   AUTHOR_AGE            INT     NOT NULL,
+   AUTHOR_LEVEL          INT     NOT NULL
+);
+
+AlbumId, Title, ArtistId
+CREATE TABLE Album (
+   AlbumId          INT     PRIMARY KEY     NOT NULL,
+   Title            TEXT    NOT NULL,
+   ArtistId         INT     NOT NULL
+);
+
+CREATE TABLE emps (
+    empid       INTEGER PRIMARY KEY
+);
+
+INSERT INTO lol(LolId) VALUES (3);
+SELECT LolId FROM lol;
+
+
+ */
+
+
+
+
