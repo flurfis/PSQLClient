@@ -1,3 +1,5 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.Properties;
 
@@ -20,11 +22,86 @@ public class ConnectPolypheny {
             String url = "jdbc:postgresql://localhost:5444/";
 
             c = DriverManager.getConnection(url, connectionProps);
+            //c.commit();     //luege was bem server aachonnt (sql?) --> emmer no speichere öb autocommit autocommit esch denne
+            //c.setAutoCommit(false);   //kei spezifische command e de iileitig, aber met BEGIN...
 
             System.out.println("Connected to Polypheny");
 
 
             statement = c.createStatement();
+
+            System.out.println("Enter 1 to SELECT,");
+            System.out.println("Enter 2 to INSERT,");
+            System.out.println("Enter 3 to CREATE TABLE,");
+            System.out.println("Enter 4 for tests:");
+            int choice = 0;
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+            try {
+                choice = Integer.parseInt(br.readLine());
+
+            } catch (NumberFormatException nfe) {
+                System.err.println("Invalid Format");
+            }
+
+            switch (choice) {
+                case 0:
+                    System.out.println("Number conversion failed");
+                    break;
+
+                case 1:
+                    System.out.println("executing select");
+                    ResultSet rs = statement.executeQuery("SELECT * FROM public.emps"); //empid, deptno, name, salary, commission
+                    //ResultSet rs = statement.executeQuery("SELECT * FROM public.Album"); //AlbumId, Title, ArtistId
+                    System.out.println("SQL-part executed successfully");
+
+                    while (rs.next()) {
+                        int empid = rs.getInt("empid");
+                        int deptno  = rs.getInt("deptno");
+                        String name = rs.getString("name");
+                        int salary  = rs.getInt("salary");
+                        int commission  = rs.getInt("commission");
+
+                        //System.out.printf( "AlbumId = %s , Title = %s, ArtistId = %s ", albumid,title, artistid );
+                        System.out.printf( "LolId = %s \n", empid);
+                        System.out.printf( "deptno = %s \n", deptno);
+                        System.out.printf( "name = %s \n", name);
+                        System.out.printf( "salary = %s \n", salary);
+                        System.out.printf( "commission = %s \n", commission);
+                        System.out.println();
+                    }
+                    rs.close();
+                    break;
+
+                case 2:
+                    System.out.println("executing insert");
+                    statement.executeUpdate("INSERT INTO public.Album(AlbumId, Title, ArtistId) VALUES (1, 'Franz', 2);");
+                    //statement.executeUpdate("INSERT INTO public.emps VALUES (1, 2, Franz, 3, 4);");
+                    System.out.println("SQL-part executed successfully");
+
+                    break;
+
+                case 3:
+                    statement.executeUpdate("CREATE TABLE \"public\".\"Album\"(\"AlbumId\" INTEGER NOT NULL,\"Title\" VARCHAR(255),\"ArtistId\" INTEGER,PRIMARY KEY (\"AlbumId\"))");
+                    System.out.println("Create Table worked");
+                    break;
+
+                case 4:
+                    //statement.executeQuery("PREPARE lol (int) AS SELECT empid FROM public.emps WHERE empid = $1;");
+                    //ResultSet rss = statement.executeQuery("EXECUTE lol (100);");
+                    //ResultSet rss = statement.executeQuery("PREPARE lol (int) AS SELECT empid FROM public.emps WHERE empid = $1; EXECUTE lol (100);");
+                    statement.executeQuery("PREPARE lol (int) AS SELECT empid FROM public.emps WHERE empid = $1;");
+                    ResultSet rss2 = statement.executeQuery("EXECUTE lol (100);");
+
+                    //statement.executeQuery("PREPARE fooplan (int, text, bool, numeric) AS INSERT INTO foo VALUES($1, $2, $3, $4); EXECUTE fooplan(1, 'Hunter Valley', 't', 200.00);");
+                    //statement.executeUpdate("PREPARE fooplan (int, text, bool, numeric) AS INSERT INTO foo VALUES($1, $2, $3, $4);");
+                    //statement.executeQuery("EXECUTE fooplan(1, 'Hunter Valley', 't', 200.00);");
+
+                    //int empidd = rss2.getInt("empid");
+                    //System.out.printf("lol = %s", empidd);
+                    break;
+            }
             //statement.executeUpdate("INSERT INTO Album(AlbumId, Title, ArtistId) VALUES (1, 'Hello', 1), (2, 'Hello', 2), (3, 'lol', 3);");
             //statement.executeUpdate("INSERT INTO lol(LolId) VALUES (1);");
             //statement.executeUpdate("SELECT empid FROM public.emps");
@@ -39,41 +116,12 @@ public class ConnectPolypheny {
              */
 
 
-            /*
-            statement.executeUpdate("CREATE TABLE Album (\n" +
-                    "   AlbumId          INT     PRIMARY KEY     NOT NULL,\n" +
-                    "   Title            TEXT    NOT NULL,\n" +
-                    "   ArtistId         INT     NOT NULL\n" +
-                    ");");
-
-             */
 
 
 
-            ResultSet rs = statement.executeQuery("SELECT empid FROM public.emps LIMIT 1"); //empid, deptno, salary, commission, name
-            //ResultSet rs = statement.executeQuery("SELECT * FROM public.emps"); //empid
-            //rs.close();
+
+
             statement.close();
-
-
-            while (rs.next()) {
-                int lol = rs.getInt("empid");
-                String  title = rs.getString("name");
-                //int artistid  = rs.getInt("deptno");
-
-                //System.out.printf( "AlbumId = %s , Title = %s, ArtistId = %s ", albumid,title, artistid );
-                System.out.printf( "LolId = %s", lol);
-                System.out.printf( "name = %s", title);
-                System.out.println();
-            }
-
-
-
-            rs.close();
-
-
-
-            System.out.println("SQL-part executed successfully");
             c.close();
 
         } catch (Exception e) {

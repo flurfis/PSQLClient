@@ -1,7 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Properties;
 
 public class ConnectPSQL {
@@ -30,12 +27,21 @@ public class ConnectPSQL {
             //statement.executeUpdate("INSERT INTO lol(LolId) VALUES (5);");  //mit executeQuery erwartet es ein resultat... gibt fehlermeldung
             //statement.executeUpdate("INSERT INTO Album(AlbumId, Title, ArtistId) VALUES (40, 'Hellosöodfj', 2222), (5, 'lolsdfsfsdff', 3000)");
 
-            /* from the website */
-
-
-
             //ResultSet rs = statement.executeQuery("SELECT * FROM Album;");
-            ResultSet rs = statement.executeQuery("SELECT empid FROM public.emps LIMIT 1");
+            ResultSet rss = statement.executeQuery("SELECT * FROM public.hihi");
+            ResultSet rs = statement.executeQuery("SELECT * FROM Album;");
+
+            //statement.executeUpdate("PREPARE lol (int) AS SELECT empid FROM public.emps WHERE empid = $1; EXECUTE lol (100);EXECUTE lol (100);");
+            //statement.executeUpdate("PREPARE lol (int) AS SELECT empid FROM public.emps WHERE empid = $1;");
+            //statement.executeQuery("EXECUTE lol (100);");
+            //statement.executeQuery("PREPARE lol (int) AS INSERT INTO public.Album(AlbumId, Title, ArtistId) VALUES ($1, 'Franz', 2); EXECUTE lol (100);");
+            //PreparedStatement pst = c.prepareStatement("SELECT empid FROM public.emps WHERE empid = ?;");
+            //pst.setInt(1, 100);
+            //pst.execute();
+
+            System.out.println("sql worked");
+
+            //ResultSet rs = null;
 
             while (rs.next()) {
                 int lol = rs.getInt("empid");
