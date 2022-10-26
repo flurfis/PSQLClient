@@ -33,7 +33,10 @@ public class ConnectPolypheny {
             System.out.println("Enter 1 to SELECT,");
             System.out.println("Enter 2 to INSERT,");
             System.out.println("Enter 3 to CREATE TABLE,");
-            System.out.println("Enter 4 for tests:");
+            System.out.println("Enter 5 for PREPARED Statements:");
+            System.out.println("Enter 6 for DROP:");
+            System.out.println("Enter 7 for TRUNCATE:");
+            System.out.println("Enter 7 for UPDATE:");
             int choice = 0;
 
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -53,6 +56,7 @@ public class ConnectPolypheny {
                 case 1:
                     System.out.println("executing select");
                     ResultSet rs = statement.executeQuery("SELECT * FROM public.emps"); //empid, deptno, name, salary, commission
+                    //ResultSet rs = statement.executeQuery("SELECT * FROM public.PGInterfaceTestTable"); //empid, deptno, name, salary, commission
                     //ResultSet rs = statement.executeQuery("SELECT * FROM public.Album"); //AlbumId, Title, ArtistId
                     System.out.println("SQL-part executed successfully");
 
@@ -76,14 +80,17 @@ public class ConnectPolypheny {
 
                 case 2:
                     System.out.println("executing insert");
-                    statement.executeUpdate("INSERT INTO public.Album(AlbumId, Title, ArtistId) VALUES (1, 'Franz', 2);");
-                    //statement.executeUpdate("INSERT INTO public.emps VALUES (1, 2, Franz, 3, 4);");
+                    int lol = statement.executeUpdate("INSERT INTO public.Album(AlbumId, Title, ArtistId) VALUES (1, 'Franzz', 2), (2, 'Hello', 2), (3, 'By', 3);");
+                    //int lol = statement.executeUpdate("INSERT INTO public.PGInterfaceTestTable(PkIdTest, VarcharTest, IntTest) VALUES (1, 'Franz', 1), (2, 'Hello', 2), (3, 'By', 3);");
+                    int lol2 = statement.getUpdateCount();
+                    System.out.println(lol2);
                     System.out.println("SQL-part executed successfully");
 
                     break;
 
                 case 3:
                     statement.executeUpdate("CREATE TABLE \"public\".\"Album\"(\"AlbumId\" INTEGER NOT NULL,\"Title\" VARCHAR(255),\"ArtistId\" INTEGER,PRIMARY KEY (\"AlbumId\"))");
+                    //statement.executeUpdate("CREATE TABLE public.PGInterfaceTestTable(PkIdTest INTEGER NOT NULL, VarcharTest VARCHAR(255), IntTest INTEGER,PRIMARY KEY (PkIdTest))");
                     System.out.println("Create Table worked");
                     break;
 
@@ -91,16 +98,49 @@ public class ConnectPolypheny {
                     //statement.executeQuery("PREPARE lol (int) AS SELECT empid FROM public.emps WHERE empid = $1;");
                     //ResultSet rss = statement.executeQuery("EXECUTE lol (100);");
                     //ResultSet rss = statement.executeQuery("PREPARE lol (int) AS SELECT empid FROM public.emps WHERE empid = $1; EXECUTE lol (100);");
-                    statement.executeQuery("PREPARE lol (int) AS SELECT empid FROM public.emps WHERE empid = $1;");
-                    ResultSet rss2 = statement.executeQuery("EXECUTE lol (100);");
+                    statement.executeUpdate("PREPARE lol (int) AS SELECT * FROM public.emps WHERE empid = $1;");
+                    ResultSet rss = statement.executeQuery("EXECUTE lol (100);");
+                    System.out.println("Executing Prepared Statement worked");
 
                     //statement.executeQuery("PREPARE fooplan (int, text, bool, numeric) AS INSERT INTO foo VALUES($1, $2, $3, $4); EXECUTE fooplan(1, 'Hunter Valley', 't', 200.00);");
                     //statement.executeUpdate("PREPARE fooplan (int, text, bool, numeric) AS INSERT INTO foo VALUES($1, $2, $3, $4);");
                     //statement.executeQuery("EXECUTE fooplan(1, 'Hunter Valley', 't', 200.00);");
+                    while (rss.next()) {
+                        int empid = rss.getInt("empid");
+                        int deptno  = rss.getInt("deptno");
+                        String name = rss.getString("name");
+                        int salary  = rss.getInt("salary");
+                        int commission  = rss.getInt("commission");
 
-                    //int empidd = rss2.getInt("empid");
-                    //System.out.printf("lol = %s", empidd);
+                        //System.out.printf( "AlbumId = %s , Title = %s, ArtistId = %s ", albumid,title, artistid );
+                        System.out.printf( "LolId = %s \n", empid);
+                        System.out.printf( "deptno = %s \n", deptno);
+                        System.out.printf( "name = %s \n", name);
+                        System.out.printf( "salary = %s \n", salary);
+                        System.out.printf( "commission = %s \n", commission);
+                        System.out.println();
+                    }
+                    rss.close();
                     break;
+
+                case 5:
+                    statement.executeUpdate("DROP TABLE public.Album;");
+                    //statement.executeUpdate("CREATE TABLE public.PGInterfaceTestTable(PkIdTest INTEGER NOT NULL, VarcharTest VARCHAR(255), IntTest INTEGER,PRIMARY KEY (PkIdTest))");
+                    System.out.println("Drop Table worked");
+                    break;
+
+                case 6:
+                    statement.executeUpdate("TRUNCATE TABLE public.Album;");
+                    //statement.executeUpdate("CREATE TABLE public.PGInterfaceTestTable(PkIdTest INTEGER NOT NULL, VarcharTest VARCHAR(255), IntTest INTEGER,PRIMARY KEY (PkIdTest))");
+                    System.out.println("Truncate Table worked");
+                    break;
+
+                case 7:
+                    statement.executeUpdate("UPDATE public.Album SET title = 'Karl' WHERE title='Johannes';");
+                    //statement.executeUpdate("CREATE TABLE public.PGInterfaceTestTable(PkIdTest INTEGER NOT NULL, VarcharTest VARCHAR(255), IntTest INTEGER,PRIMARY KEY (PkIdTest))");
+                    System.out.println("Update Table worked");
+                    break;
+
             }
             //statement.executeUpdate("INSERT INTO Album(AlbumId, Title, ArtistId) VALUES (1, 'Hello', 1), (2, 'Hello', 2), (3, 'lol', 3);");
             //statement.executeUpdate("INSERT INTO lol(LolId) VALUES (1);");

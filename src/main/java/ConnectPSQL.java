@@ -28,21 +28,23 @@ public class ConnectPSQL {
             //statement.executeUpdate("INSERT INTO Album(AlbumId, Title, ArtistId) VALUES (40, 'Hellosöodfj', 2222), (5, 'lolsdfsfsdff', 3000)");
 
             //ResultSet rs = statement.executeQuery("SELECT * FROM Album;");
-            ResultSet rss = statement.executeQuery("SELECT * FROM public.hihi");
-            ResultSet rs = statement.executeQuery("SELECT * FROM Album;");
+            //ResultSet rss = statement.executeQuery("SELECT * FROM public.hihi");
+            //ResultSet rs = statement.executeQuery("SELECT * FROM Album;");
 
             //statement.executeUpdate("PREPARE lol (int) AS SELECT empid FROM public.emps WHERE empid = $1; EXECUTE lol (100);EXECUTE lol (100);");
             //statement.executeUpdate("PREPARE lol (int) AS SELECT empid FROM public.emps WHERE empid = $1;");
             //statement.executeQuery("EXECUTE lol (100);");
-            //statement.executeQuery("PREPARE lol (int) AS INSERT INTO public.Album(AlbumId, Title, ArtistId) VALUES ($1, 'Franz', 2); EXECUTE lol (100);");
+            int lol = statement.executeUpdate("PREPARE lol (int) AS INSERT INTO public.Album(AlbumId, Title, ArtistId) VALUES ($1, $2, $3); EXECUTE lol (114, 'Franz', 3), lol (115, 'Hello', 2);");
             //PreparedStatement pst = c.prepareStatement("SELECT empid FROM public.emps WHERE empid = ?;");
             //pst.setInt(1, 100);
             //pst.execute();
 
             System.out.println("sql worked");
+            System.out.println(lol);
 
             //ResultSet rs = null;
 
+            /*
             while (rs.next()) {
                 int lol = rs.getInt("empid");
                 //String  title = rs.getString("Title");
@@ -52,15 +54,10 @@ public class ConnectPSQL {
                 System.out.printf( "LolId = %s", lol);
                 System.out.println();
             }
+            rs.close();
+             */
 
             System.out.println("SQL-part executed successfully");
-
-            rs.close();
-
-
-
-
-
 
             statement.close();
             c.close();
