@@ -1,4 +1,5 @@
-import java.awt.image.BufferedImage;
+package testConnection;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,6 +15,7 @@ public class DataSelection {
         System.out.println("Enter 4 if you want to connect to Polypheny - concurrency2:");
         System.out.println("Enter 5 if you want to connect to Polypheny - concurrency at the same time:");
         System.out.println("Enter 6 if you want to connect to Polypheny - concurrency at the same time2:");
+        System.out.println("Enter 7 if you want to connect via JDBC to Polypheny:");
         int choice = 0;
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -54,6 +56,8 @@ public class DataSelection {
             case 6:
                 ConcurrencyTest.startConnection4();
                 break;
+            case 7:
+                ConnectJdbcPolypheny.startConnection();
         }
 
     }

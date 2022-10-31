@@ -1,3 +1,5 @@
+package testConnection;
+
 import java.sql.*;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;

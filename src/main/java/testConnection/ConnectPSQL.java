@@ -1,3 +1,5 @@
+package testConnection;
+
 import java.sql.*;
 import java.util.Properties;
 
@@ -34,13 +36,19 @@ public class ConnectPSQL {
             //statement.executeUpdate("PREPARE lol (int) AS SELECT empid FROM public.emps WHERE empid = $1; EXECUTE lol (100);EXECUTE lol (100);");
             //statement.executeUpdate("PREPARE lol (int) AS SELECT empid FROM public.emps WHERE empid = $1;");
             //statement.executeQuery("EXECUTE lol (100);");
-            int lol = statement.executeUpdate("PREPARE lol (int) AS INSERT INTO public.Album(AlbumId, Title, ArtistId) VALUES ($1, $2, $3); EXECUTE lol (114, 'Franz', 3), lol (115, 'Hello', 2);");
+            //int lol = statement.executeUpdate("PREPARE lol (int) AS INSERT INTO public.Album(AlbumId, Title, ArtistId) VALUES ($1, $2, $3); EXECUTE lol (114, 'Franz', 3);");
             //PreparedStatement pst = c.prepareStatement("SELECT empid FROM public.emps WHERE empid = ?;");
             //pst.setInt(1, 100);
             //pst.execute();
+            int lol1 = statement.executeUpdate("DROP TABLE emps");
+            int lol = statement.executeUpdate("CREATE TABLE emps(empid INTEGER NOT NULL, deptno INTEGER, name VARCHAR(20), salary INTEGER, commission INTEGER,PRIMARY KEY (empid));");
+            int lol2 = statement.executeUpdate("INSERT INTO emps(empid, deptno, name, salary, commission) VALUES (100, 10, 'Bill', 10000, 1000), (110, 10, 'Theodore', 11500, 250), (150, 20, 'Sebastian', 7000, 400), (200, 30, 'Eric', 8000, 500);");
+
 
             System.out.println("sql worked");
+            System.out.println(lol1);
             System.out.println(lol);
+            System.out.println(lol2);
 
             //ResultSet rs = null;
 

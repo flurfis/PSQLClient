@@ -1,3 +1,5 @@
+package testConnection;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.sql.*;
@@ -61,6 +63,7 @@ public class ConnectPolypheny {
                     System.out.println("SQL-part executed successfully");
 
                     while (rs.next()) {
+                        int columnType = rs.getMetaData().getColumnType( 1 );
                         int empid = rs.getInt("empid");
                         int deptno  = rs.getInt("deptno");
                         String name = rs.getString("name");
@@ -80,8 +83,8 @@ public class ConnectPolypheny {
 
                 case 2:
                     System.out.println("executing insert");
-                    int lol = statement.executeUpdate("INSERT INTO public.Album(AlbumId, Title, ArtistId) VALUES (1, 'Franzz', 2), (2, 'Hello', 2), (3, 'By', 3);");
-                    //int lol = statement.executeUpdate("INSERT INTO public.PGInterfaceTestTable(PkIdTest, VarcharTest, IntTest) VALUES (1, 'Franz', 1), (2, 'Hello', 2), (3, 'By', 3);");
+                    int lol = statement.executeUpdate("INSERT INTO Album(AlbumId, Title, ArtistId) VALUES (1, 'Franzz', 2), (2, 'Hello', 2), (3, 'By', 3);");
+                    //int lol = statement.executeUpdate("INSERT INTO PGInterfaceTestTable(PkIdTest, VarcharTest, IntTest) VALUES (1, 'Franz', 1), (2, 'Hello', 2), (3, 'By', 3);");
                     int lol2 = statement.getUpdateCount();
                     System.out.println(lol2);
                     System.out.println("SQL-part executed successfully");
@@ -90,7 +93,7 @@ public class ConnectPolypheny {
 
                 case 3:
                     statement.executeUpdate("CREATE TABLE \"public\".\"Album\"(\"AlbumId\" INTEGER NOT NULL,\"Title\" VARCHAR(255),\"ArtistId\" INTEGER,PRIMARY KEY (\"AlbumId\"))");
-                    //statement.executeUpdate("CREATE TABLE public.PGInterfaceTestTable(PkIdTest INTEGER NOT NULL, VarcharTest VARCHAR(255), IntTest INTEGER,PRIMARY KEY (PkIdTest))");
+                    //statement.executeUpdate("CREATE TABLE PGInterfaceTestTable(PkIdTest INTEGER NOT NULL, VarcharTest VARCHAR(255), IntTest INTEGER,PRIMARY KEY (PkIdTest))");
                     System.out.println("Create Table worked");
                     break;
 
@@ -100,6 +103,12 @@ public class ConnectPolypheny {
                     //ResultSet rss = statement.executeQuery("PREPARE lol (int) AS SELECT empid FROM public.emps WHERE empid = $1; EXECUTE lol (100);");
                     statement.executeUpdate("PREPARE lol (int) AS SELECT * FROM public.emps WHERE empid = $1;");
                     ResultSet rss = statement.executeQuery("EXECUTE lol (100);");
+                    System.out.println("Executing Prepared Statement worked");
+
+                    statement.executeUpdate("CREATE TABLE pginterfacetesttable(PkIdTest INTEGER NOT NULL, VarcharTest INTEGER, IntTest INTEGER,PRIMARY KEY (PkIdTest))");
+                    statement.executeUpdate("PREPARE lol2 (int, int, int) AS INSERT INTO pginterfacetesttable(PkIdTest, VarcharTest, IntTest) VALUES ($1, $2, $3);");
+                    System.out.println("created prepared statement");
+                    ResultSet rsss = statement.executeQuery("EXECUTE lol2 (1, 1, 1)");
                     System.out.println("Executing Prepared Statement worked");
 
                     //statement.executeQuery("PREPARE fooplan (int, text, bool, numeric) AS INSERT INTO foo VALUES($1, $2, $3, $4); EXECUTE fooplan(1, 'Hunter Valley', 't', 200.00);");
