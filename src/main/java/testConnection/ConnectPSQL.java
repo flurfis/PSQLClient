@@ -40,15 +40,16 @@ public class ConnectPSQL {
             //PreparedStatement pst = c.prepareStatement("SELECT empid FROM public.emps WHERE empid = ?;");
             //pst.setInt(1, 100);
             //pst.execute();
-            int lol1 = statement.executeUpdate("DROP TABLE emps");
-            int lol = statement.executeUpdate("CREATE TABLE emps(empid INTEGER NOT NULL, deptno INTEGER, name VARCHAR(20), salary INTEGER, commission INTEGER,PRIMARY KEY (empid));");
-            int lol2 = statement.executeUpdate("INSERT INTO emps(empid, deptno, name, salary, commission) VALUES (100, 10, 'Bill', 10000, 1000), (110, 10, 'Theodore', 11500, 250), (150, 20, 'Sebastian', 7000, 400), (200, 30, 'Eric', 8000, 500);");
+            //int lol1 = statement.executeUpdate("DROP TABLE emps");
+            //int lol = statement.executeUpdate("CREATE TABLE emps(empid INTEGER NOT NULL, deptno INTEGER, name VARCHAR(20), salary INTEGER, commission INTEGER,PRIMARY KEY (empid));");
+            //int lol2 = statement.executeUpdate("INSERT INTO emps(empid, deptno, name, salary, commission) VALUES (100, 10, 'Bill', 10000, 1000), (110, 10, 'Theodore', 11500, 250), (150, 20, 'Sebastian', 7000, 400), (200, 30, 'Eric', 8000, 500);");
 
+            statement.executeUpdate("DROP TABLE IF EXISTS public.pginterfacetesttable");
+            statement.executeUpdate("CREATE TABLE pginterfacetesttable(PkIdTest INTEGER NOT NULL, VarcharTest VARCHAR(255), IntTest INTEGER,PRIMARY KEY (PkIdTest))");
+            statement.executeUpdate("PREPARE lol (int, text, int) AS INSERT INTO pginterfacetesttable VALUES ($1, $2, $3), ($4, $5, $6)");
+            statement.executeUpdate("EXECUTE lol (4, 'HALLO', 4, 5, 'x', 5);");
 
             System.out.println("sql worked");
-            System.out.println(lol1);
-            System.out.println(lol);
-            System.out.println(lol2);
 
             //ResultSet rs = null;
 
